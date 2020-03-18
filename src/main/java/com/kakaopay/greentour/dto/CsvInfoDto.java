@@ -12,7 +12,7 @@ public class CsvInfoDto {
     private long programId;
 
     @CsvBindByPosition(position = 1)
-    private String prgmName;
+    private String programName;
 
     @CsvBindByPosition(position = 2)
     private String theme;

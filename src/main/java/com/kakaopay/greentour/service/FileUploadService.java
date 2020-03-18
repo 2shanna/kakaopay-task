@@ -1,70 +1,41 @@
 package com.kakaopay.greentour.service;
 
+import com.kakaopay.greentour.domain.Program;
+import com.kakaopay.greentour.domain.Region;
 import com.kakaopay.greentour.dto.CsvInfoDto;
-import com.opencsv.bean.ColumnPositionMappingStrategy;
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
-import org.apache.tomcat.util.http.fileupload.FileUtils;
+import com.kakaopay.greentour.repository.ProgramRepository;
+import com.kakaopay.greentour.repository.RegionRepository;
+import com.kakaopay.greentour.util.CsvUtil;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class FileUploadService {
 
-    public List<CsvInfoDto> store(MultipartFile file) {
-        // save file temporally
-        File dir = new File("tmp");
-        if (dir.exists()) {
-            try {
-                FileUtils.deleteDirectory(dir);
-            } catch (IOException ex) {
-                ex.printStackTrace();     //  TODO
-            }
-        }
-        dir.mkdirs();
-        File tmpFile = new File(dir.getAbsolutePath() + File.separator + file.getOriginalFilename());
-        try (InputStream is = file.getInputStream();
-             BufferedOutputStream stream = new BufferedOutputStream(new FileOutputStream(tmpFile))) {
-            int i;
-            while ((i = is.read()) != -1) {
-                stream.write(i);
-            }
-            stream.flush();
-        } catch (IOException e) {
-            e.getStackTrace();          //  TODO
-        }
+    @Autowired
+    private RegionRepository regionRepository;
 
-        // read saved file
-        List<CsvInfoDto> CsvInfoDtoList = new ArrayList<>();
-        try (BufferedReader br = Files.newBufferedReader(tmpFile.toPath(),
-                StandardCharsets.UTF_8)) {
+    @Autowired
+    private ProgramRepository programRepository;
 
-            // map file to dto
-            ColumnPositionMappingStrategy strategy = new ColumnPositionMappingStrategy();
-            strategy.setType(CsvInfoDto.class);
-            String[] fields = {"programId", "prgmName", "theme", "region", "outline", "detail"};
-            strategy.setColumnMapping(fields);
+    public List<CsvInfoDto> save(MultipartFile file) throws Exception {
 
-            br.readLine();      //  skip header
+        List<CsvInfoDto> csvInfoDtoList = new CsvUtil().readAndParseToDto(file);
+        List<Region> regionList = new ArrayList<>();
+        List<Program> programList = new ArrayList<>();
 
-            CsvToBean csvToBean = new CsvToBeanBuilder(br)
-                    .withType(CsvInfoDto.class)
-                    .withMappingStrategy(strategy)
-                    .withIgnoreLeadingWhiteSpace(true)
-                    .build();
+        csvInfoDtoList.forEach(info -> {
+            regionList.add(new Region(info.getRegion()));
+            programList.add(new Program(info.getProgramId(), info.getProgramName(), info.getTheme(),
+                    info.getRegion(), info.getOutline(), info.getDetail()));
+        });
 
-            CsvInfoDtoList = csvToBean.parse();
-
-        } catch (Exception e) {
-            e.getStackTrace();          // TODO
-        }
-
-        return CsvInfoDtoList;
+        regionList.forEach(regionRepository::save);
+        programList.forEach(programRepository::save);
+        return csvInfoDtoList;
     }
 }
