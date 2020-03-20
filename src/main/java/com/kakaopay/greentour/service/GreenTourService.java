@@ -4,6 +4,7 @@ import com.kakaopay.greentour.domain.GreenTour;
 import com.kakaopay.greentour.domain.Program;
 import com.kakaopay.greentour.domain.Region;
 import com.kakaopay.greentour.dto.EcoInformation;
+import com.kakaopay.greentour.dto.SearchRegionNameResponse;
 import com.kakaopay.greentour.repository.GreenTourRepository;
 import com.kakaopay.greentour.repository.ProgramRepository;
 import com.kakaopay.greentour.repository.RegionRepository;
@@ -115,5 +116,26 @@ public class GreenTourService {
         saveAll(List.of(program));
 
         return findEcoInfoByProgramId(ecoInfo.getProgramId());
+    }
+
+    public SearchRegionNameResponse findByRegionName(String regionName) {
+        SearchRegionNameResponse response = new SearchRegionNameResponse();
+
+        Optional<Region> regionOpt = regionRepository.findByRegionName(regionName);
+        if (regionOpt.isPresent()) {
+            Region region = regionOpt.get();
+            region.setGreenTours(new ArrayList<>());
+            response.setRegion(region);
+
+            List<GreenTour> tourList = greenTourRepository.findAllByRegion(region.getRegionCd());
+            List<Program> programList = new ArrayList<>();
+            for (GreenTour tour : tourList) {
+                Program program = tour.getProgram();
+                program.setGreenTours(new ArrayList<>());
+                programList.add(program);
+            }
+            response.setProgramList(programList);
+        }
+        return response;
     }
 }

@@ -38,4 +38,11 @@ public class GreenTourController {
         return new ResponseEntity<>(greenTourService.updateEcoInfo(ecoInfo), headers, HttpStatus.CREATED);
         // TODO return 404 when there was no data to update
     }
+
+    @GetMapping("search/region")
+    public ResponseEntity findByRegionName(@RequestParam String regionName) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return new ResponseEntity<>(greenTourService.findByRegionName(regionName), headers, HttpStatus.OK);
+    }
 }

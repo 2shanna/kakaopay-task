@@ -157,7 +157,7 @@ public class RegionService {
                 .map(this::getLocalAddress)
                 .collect(Collectors.toList());
 
-        // save region data
+        // save region data         // TODO don't register when depth 1~3 names even equal to
         regionList.forEach(regionRepository::saveAndFlush);
 
         // return all region data
