@@ -5,9 +5,9 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class SearchKeywordResponse {
+public class OutlineKeywordResponse {
 
     private String keyword;
 
-    private SearchKeywordProgram program;
+    private RegionCountProgram program;
 }

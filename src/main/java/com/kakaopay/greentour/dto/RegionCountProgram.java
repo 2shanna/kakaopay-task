@@ -9,7 +9,7 @@ import lombok.Setter;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class SearchKeywordProgram {
+public class RegionCountProgram {
 
     private String region;
 

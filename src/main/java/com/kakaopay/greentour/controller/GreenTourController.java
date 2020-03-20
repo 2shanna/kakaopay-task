@@ -46,10 +46,17 @@ public class GreenTourController {
         return new ResponseEntity<>(greenTourService.findByRegionName(regionName), headers, HttpStatus.OK);
     }
 
-    @GetMapping("search/keyword")
-    public ResponseEntity findByKeyword(@RequestParam String keyword) {
+    @GetMapping("search/outline/keyword")
+    public ResponseEntity findByOutline(@RequestParam String keyword) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        return new ResponseEntity<>(greenTourService.findByKeyword(keyword), headers, HttpStatus.OK);
+        return new ResponseEntity<>(greenTourService.findProgramByOutlineKeyword(keyword), headers, HttpStatus.OK);
+    }
+
+    @GetMapping("search/detail/keyword")
+    public ResponseEntity findByDetail(@RequestParam String keyword) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return new ResponseEntity<>(greenTourService.findProgramByDetailKeyword(keyword), headers, HttpStatus.OK);
     }
 }

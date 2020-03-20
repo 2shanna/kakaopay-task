@@ -11,4 +11,6 @@ public interface ProgramRepository extends JpaRepository<Program, Long> {
 
     List<Program> findByOutlineContaining(String keyword);
 
+    List<Program> findByDetailContaining(String keyword);
+
 }

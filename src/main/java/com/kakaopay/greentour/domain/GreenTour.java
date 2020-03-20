@@ -1,15 +1,17 @@
 package com.kakaopay.greentour.domain;
 
-import lombok.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+import lombok.ToString;
 
 import javax.persistence.*;
 import java.io.Serializable;
 
 @NoArgsConstructor
 @AllArgsConstructor
-@Getter
-@Setter
 @Entity
+@Data
 @ToString
 @Table(name = "GREEN_TOUR")
 public class GreenTour implements Serializable {

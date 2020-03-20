@@ -7,6 +7,7 @@ import com.kakaopay.greentour.dto.*;
 import com.kakaopay.greentour.repository.GreenTourRepository;
 import com.kakaopay.greentour.repository.ProgramRepository;
 import com.kakaopay.greentour.repository.RegionRepository;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -136,10 +137,10 @@ public class GreenTourService {
         return response;
     }
 
-    public SearchKeywordResponse findByKeyword(String keyword) {
-        SearchKeywordResponse response = new SearchKeywordResponse();
+    public OutlineKeywordResponse findProgramByOutlineKeyword(String keyword) {
+        OutlineKeywordResponse response = new OutlineKeywordResponse();
 
-        SearchKeywordProgram program = new SearchKeywordProgram();
+        RegionCountProgram program = new RegionCountProgram();
         List<Program> programList = programRepository.findByOutlineContaining(keyword);
         program.setCount(programList.size());
         if (!programList.isEmpty()) {
@@ -148,6 +149,21 @@ public class GreenTourService {
 
         response.setKeyword(keyword);
         response.setProgram(program);
+
+        return response;
+    }
+
+    public DetailKeywordResponse findProgramByDetailKeyword(String keyword) {
+        DetailKeywordResponse response = new DetailKeywordResponse();
+
+        long count = 0;
+        List<Program> programList = programRepository.findByDetailContaining(keyword);
+        for (Program program : programList) {
+            count += StringUtils.countMatches(program.getDetail(), keyword);
+        }
+
+        response.setKeyword(keyword);
+        response.setCount(count);
 
         return response;
     }
