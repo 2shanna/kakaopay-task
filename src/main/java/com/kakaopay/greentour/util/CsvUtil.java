@@ -1,6 +1,6 @@
 package com.kakaopay.greentour.util;
 
-import com.kakaopay.greentour.dto.CsvInfoDto;
+import com.kakaopay.greentour.dto.EcoInformation;
 import com.opencsv.CSVReader;
 import com.opencsv.bean.ColumnPositionMappingStrategy;
 import com.opencsv.bean.CsvToBean;
@@ -18,10 +18,10 @@ import java.util.List;
 @Slf4j
 public class CsvUtil {
 
-    public List<CsvInfoDto> readAndParseToDto(MultipartFile file) throws Exception {
+    public List<EcoInformation> readAndParse(MultipartFile file) throws Exception {
         String fileName = file.getName();
 
-        List<CsvInfoDto> CsvInfoDtoList = new ArrayList<>();
+        List<EcoInformation> ecoInformationList = new ArrayList<>();
 
         log.debug("[start] read file : " + fileName);
         try (InputStream is = file.getInputStream()) {
@@ -31,22 +31,22 @@ public class CsvUtil {
 
             log.debug("[start] parse into dto");
             ColumnPositionMappingStrategy strategy = new ColumnPositionMappingStrategy();
-            strategy.setType(CsvInfoDto.class);
+            strategy.setType(EcoInformation.class);
             String[] fields = {"programId", "programName", "theme", "region", "outline", "detail"};
             strategy.setColumnMapping(fields);
 
             CsvToBean csvToBean = new CsvToBeanBuilder(csvReader)
-                    .withType(CsvInfoDto.class)
+                    .withType(EcoInformation.class)
                     .withMappingStrategy(strategy)
                     .withIgnoreLeadingWhiteSpace(true)
                     .build();
 
-            CsvInfoDtoList = csvToBean.parse();
+            ecoInformationList = csvToBean.parse();
             log.debug("[success] parse into dto");
         } catch (IOException e) {
             throw new Exception("[fail] read and parse csv file : " + fileName, e);
         }
 
-        return CsvInfoDtoList;
+        return ecoInformationList;
     }
 }

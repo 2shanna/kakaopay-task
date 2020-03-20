@@ -6,4 +6,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ProgramRepository extends JpaRepository<Program, Long> {
+
+//    Optional<Program> findByProgramCd(String programCd);
 }

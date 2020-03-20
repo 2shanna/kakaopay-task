@@ -2,7 +2,8 @@ package com.kakaopay.greentour.service;
 
 import com.kakaopay.greentour.domain.Program;
 import com.kakaopay.greentour.domain.Region;
-import com.kakaopay.greentour.dto.CsvInfoDto;
+import com.kakaopay.greentour.dto.EcoInformation;
+import com.kakaopay.greentour.dto.EcoInformationResponse;
 import com.kakaopay.greentour.repository.ProgramRepository;
 import com.kakaopay.greentour.repository.RegionRepository;
 import com.kakaopay.greentour.util.CsvUtil;
@@ -10,11 +11,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @Service
 public class FileUploadService {
+
+    @Autowired
+    private RegionService regionService;
+
+    @Autowired
+    private ProgramService programService;
+
+    @Autowired
+    private GreenTourService greenTourService;
 
     @Autowired
     private RegionRepository regionRepository;
@@ -22,20 +31,30 @@ public class FileUploadService {
     @Autowired
     private ProgramRepository programRepository;
 
-    public List<CsvInfoDto> save(MultipartFile file) throws Exception {
+    public EcoInformationResponse save(MultipartFile file) throws Exception {
+        EcoInformationResponse response = new EcoInformationResponse();
 
-        List<CsvInfoDto> csvInfoDtoList = new CsvUtil().readAndParseToDto(file);
-        List<Region> regionList = new ArrayList<>();
-        List<Program> programList = new ArrayList<>();
+        // first, delete whole data from table
+        regionRepository.deleteAll();
+        regionRepository.flush();
+        programRepository.deleteAll();
+        programRepository.flush();
 
-        csvInfoDtoList.forEach(info -> {
-            regionList.add(new Region(info.getRegion()));
-            programList.add(new Program(info.getProgramId(), info.getProgramName(), info.getTheme(),
-                    info.getRegion(), info.getOutline(), info.getDetail()));
-        });
+        // file read
+        List<EcoInformation> ecoInformationList = new CsvUtil().readAndParse(file);
 
-        regionList.forEach(regionRepository::save);
-        programList.forEach(programRepository::save);
-        return csvInfoDtoList;
+        // create program data
+        List<Program> programList = programService.saveAll(ecoInformationList);
+        response.setProgramList(programList);
+
+        // create region data
+        List<Region> regionList = regionService.saveAll(ecoInformationList);
+        response.setRegionList(regionList);
+
+        // create greenTour data
+        greenTourService.saveAll(programList);
+//        response.setGreenTourList(greenTourList);         // don't return greentour list
+
+        return response;
     }
 }
