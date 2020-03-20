@@ -2,14 +2,16 @@ package com.kakaopay.greentour.dto;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Getter
 @Setter
 @AllArgsConstructor
-public class SearchRegionProgram {
+@NoArgsConstructor
+public class SearchKeywordProgram {
 
-    private String programName;
+    private String region;
 
-    private String theme;
+    private long count;
 }

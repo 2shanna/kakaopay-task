@@ -3,13 +3,11 @@ package com.kakaopay.greentour.dto;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.util.List;
-
 @Getter
 @Setter
-public class SearchRegionResponse {
+public class SearchKeywordResponse {
 
-    private String regionCd;
+    private String keyword;
 
-    private List<SearchRegionProgram> programList;
+    private SearchKeywordProgram program;
 }

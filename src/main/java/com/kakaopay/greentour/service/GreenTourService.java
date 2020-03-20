@@ -3,9 +3,7 @@ package com.kakaopay.greentour.service;
 import com.kakaopay.greentour.domain.GreenTour;
 import com.kakaopay.greentour.domain.Program;
 import com.kakaopay.greentour.domain.Region;
-import com.kakaopay.greentour.dto.EcoInformation;
-import com.kakaopay.greentour.dto.SearchRegionProgram;
-import com.kakaopay.greentour.dto.SearchRegionResponse;
+import com.kakaopay.greentour.dto.*;
 import com.kakaopay.greentour.repository.GreenTourRepository;
 import com.kakaopay.greentour.repository.ProgramRepository;
 import com.kakaopay.greentour.repository.RegionRepository;
@@ -135,6 +133,22 @@ public class GreenTourService {
             }
             response.setProgramList(programList);
         }
+        return response;
+    }
+
+    public SearchKeywordResponse findByKeyword(String keyword) {
+        SearchKeywordResponse response = new SearchKeywordResponse();
+
+        SearchKeywordProgram program = new SearchKeywordProgram();
+        List<Program> programList = programRepository.findByOutlineContaining(keyword);
+        program.setCount(programList.size());
+        if (!programList.isEmpty()) {
+            program.setRegion(programList.get(0).getOriginalRegion());
+        }
+
+        response.setKeyword(keyword);
+        response.setProgram(program);
+
         return response;
     }
 }

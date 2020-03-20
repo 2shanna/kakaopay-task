@@ -45,4 +45,11 @@ public class GreenTourController {
         headers.setContentType(MediaType.APPLICATION_JSON);
         return new ResponseEntity<>(greenTourService.findByRegionName(regionName), headers, HttpStatus.OK);
     }
+
+    @GetMapping("search/keyword")
+    public ResponseEntity findByKeyword(@RequestParam String keyword) {
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
+        return new ResponseEntity<>(greenTourService.findByKeyword(keyword), headers, HttpStatus.OK);
+    }
 }
