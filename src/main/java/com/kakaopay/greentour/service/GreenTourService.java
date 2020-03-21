@@ -3,7 +3,12 @@ package com.kakaopay.greentour.service;
 import com.kakaopay.greentour.domain.GreenTour;
 import com.kakaopay.greentour.domain.Program;
 import com.kakaopay.greentour.domain.Region;
-import com.kakaopay.greentour.dto.*;
+import com.kakaopay.greentour.dto.DetailKeywordResponse;
+import com.kakaopay.greentour.dto.EcoInformation;
+import com.kakaopay.greentour.dto.OutlineKeywordResponse;
+import com.kakaopay.greentour.dto.RegionCountProgram;
+import com.kakaopay.greentour.dto.SearchRegionProgram;
+import com.kakaopay.greentour.dto.SearchRegionResponse;
 import com.kakaopay.greentour.repository.GreenTourRepository;
 import com.kakaopay.greentour.repository.ProgramRepository;
 import com.kakaopay.greentour.repository.RegionRepository;
@@ -12,7 +17,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
@@ -43,11 +50,14 @@ public class GreenTourService {
                 Optional<Region> regionOpt = regionRepository.findByRegionName(regionName);
                 if (regionOpt.isPresent()) {
                     region = regionOpt.get();
+                    GreenTour tour;
                     Optional<GreenTour> greenTourOpt = greenTourRepository.findByProgramAndRegion(program.getProgramId(), region.getRegionCd());
                     if (greenTourOpt.isEmpty()) {
-                        greenTourRepository.saveAndFlush(new GreenTour(program, region));
+                        tour = greenTourRepository.saveAndFlush(new GreenTour(program, region));
+                    } else {
+                        tour = greenTourOpt.get();
                     }
-                    greenTourList.add(greenTourRepository.findByProgramAndRegion(program.getProgramId(), region.getRegionCd()).get());
+                    greenTourList.add(tour);
                 }
             }
         });
@@ -66,21 +76,12 @@ public class GreenTourService {
         return ecoInformationList;
     }
 
-    private List<EcoInformation> findEcoInfoByProgramId(long programId) {
-        List<EcoInformation> ecoInformationList = new ArrayList<>();
-        List<GreenTour> greenTourList = greenTourRepository.findAllByProgram(programId);
-        for (GreenTour tour : greenTourList) {
-            Program program = tour.getProgram();
-            if (ecoInformationList.stream().noneMatch(info -> info.getProgramId() == program.getProgramId())) {
-                EcoInformation programDto = new EcoInformation(program.getProgramId(), program.getProgramName(),
-                        program.getTheme(), program.getOriginalRegion(), program.getOutline(), program.getDetail());
-                ecoInformationList.add(programDto);
-            }
-        }
-        return ecoInformationList;
+    private EcoInformation mapProgramToDto(Program program) {
+        return new EcoInformation(program.getProgramId(), program.getProgramName(),
+                program.getTheme(), program.getOriginalRegion(), program.getOutline(), program.getDetail());
     }
 
-    public List<EcoInformation> registerEcoInfo(EcoInformation ecoInfo) {
+    public EcoInformation registerEcoInfo(EcoInformation ecoInfo) {
         // program data existence check
         if (programRepository.existsById(ecoInfo.getProgramId())) {
             return null;                // duplication error
@@ -95,10 +96,10 @@ public class GreenTourService {
         // create greenTour data
         saveAll(List.of(program));
 
-        return findEcoInfoByProgramId(ecoInfo.getProgramId());
+        return mapProgramToDto(program);
     }
 
-    public List<EcoInformation> updateEcoInfo(EcoInformation ecoInfo) {
+    public EcoInformation updateEcoInfo(EcoInformation ecoInfo) {
         if (!programRepository.existsById(ecoInfo.getProgramId())) {
             return null;                // duplication error
         }
@@ -115,7 +116,7 @@ public class GreenTourService {
         greenTourIdList.forEach(id -> greenTourRepository.deleteById(id));
         saveAll(List.of(program));
 
-        return findEcoInfoByProgramId(ecoInfo.getProgramId());
+        return mapProgramToDto(program);
     }
 
     public SearchRegionResponse findByRegionName(String regionName) {
@@ -140,15 +141,18 @@ public class GreenTourService {
     public OutlineKeywordResponse findProgramByOutlineKeyword(String keyword) {
         OutlineKeywordResponse response = new OutlineKeywordResponse();
 
-        RegionCountProgram program = new RegionCountProgram();
+        List<RegionCountProgram> regionCountProgramList = new ArrayList<>();
         List<Program> programList = programRepository.findByOutlineContaining(keyword);
-        program.setCount(programList.size());
-        if (!programList.isEmpty()) {
-            program.setRegion(programList.get(0).getOriginalRegion());
+        Map<String, Long> programMap = new HashMap<>();
+        for (Program program : programList) {
+            Long cnt = programMap.getOrDefault(program.getOriginalRegion(), 0L);
+            programMap.put(program.getOriginalRegion(), cnt + 1);
         }
+        programMap.forEach((key, value) ->
+                regionCountProgramList.add(new RegionCountProgram(key, value)));
 
         response.setKeyword(keyword);
-        response.setProgram(program);
+        response.setProgramList(regionCountProgramList);
 
         return response;
     }

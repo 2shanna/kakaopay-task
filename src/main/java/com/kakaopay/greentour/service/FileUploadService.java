@@ -4,6 +4,7 @@ import com.kakaopay.greentour.domain.Program;
 import com.kakaopay.greentour.domain.Region;
 import com.kakaopay.greentour.dto.EcoInformation;
 import com.kakaopay.greentour.dto.EcoInformationResponse;
+import com.kakaopay.greentour.repository.GreenTourRepository;
 import com.kakaopay.greentour.repository.ProgramRepository;
 import com.kakaopay.greentour.repository.RegionRepository;
 import com.kakaopay.greentour.util.CsvUtil;
@@ -31,14 +32,19 @@ public class FileUploadService {
     @Autowired
     private ProgramRepository programRepository;
 
+    @Autowired
+    private GreenTourRepository greenTourRepository;
+
     public EcoInformationResponse save(MultipartFile file) throws Exception {
         EcoInformationResponse response = new EcoInformationResponse();
 
         // first, delete whole data from table
-        regionRepository.deleteAll();
-        regionRepository.flush();
         programRepository.deleteAll();
         programRepository.flush();
+        regionRepository.deleteAll();
+        regionRepository.flush();
+        greenTourRepository.deleteAll();
+        greenTourRepository.flush();
 
         // file read
         List<EcoInformation> ecoInformationList = new CsvUtil().readAndParse(file);
@@ -53,7 +59,6 @@ public class FileUploadService {
 
         // create greenTour data
         greenTourService.saveAll(programList);
-//        response.setGreenTourList(greenTourList);         // don't return greentour list
 
         return response;
     }

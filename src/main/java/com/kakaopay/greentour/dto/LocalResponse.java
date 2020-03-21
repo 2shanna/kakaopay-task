@@ -1,13 +1,11 @@
 package com.kakaopay.greentour.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
 import java.util.HashMap;
 import java.util.List;
 
-@Getter
-@Setter
+@Data
 public class LocalResponse {
 
     private HashMap<String, Object> meta;

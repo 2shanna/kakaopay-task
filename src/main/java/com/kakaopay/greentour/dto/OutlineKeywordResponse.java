@@ -1,13 +1,13 @@
 package com.kakaopay.greentour.dto;
 
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
 
-@Getter
-@Setter
+import java.util.List;
+
+@Data
 public class OutlineKeywordResponse {
 
     private String keyword;
 
-    private RegionCountProgram program;
+    private List<RegionCountProgram> programList;
 }

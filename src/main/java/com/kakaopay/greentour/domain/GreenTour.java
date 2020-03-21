@@ -3,16 +3,21 @@ package com.kakaopay.greentour.domain;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.ToString;
 
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.io.Serializable;
 
+@Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity
-@Data
-@ToString
 @Table(name = "GREEN_TOUR")
 public class GreenTour implements Serializable {
 
@@ -30,7 +35,6 @@ public class GreenTour implements Serializable {
     @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "REGION_CD")
     private Region region;
-
 
     public GreenTour(Program program, Region region) {
         this.region = region;

@@ -14,12 +14,10 @@ import java.util.stream.Collectors;
 public class ProgramService {
 
     @Autowired
-    private
-    RegionService regionService;
+    private RegionService regionService;
 
     @Autowired
-    private
-    ProgramRepository programRepository;
+    private ProgramRepository programRepository;
 
     public List<Program> saveAll(List<EcoInformation> ecoInformationList) {
         List<Program> programList = ecoInformationList.stream().map(this::parseEcoInfoIntoProgram)
@@ -46,7 +44,7 @@ public class ProgramService {
         }
     }
 
-    private Program parseEcoInfoIntoProgram(EcoInformation ecoInfo) {
+    public Program parseEcoInfoIntoProgram(EcoInformation ecoInfo) {
         return new Program(
                 ecoInfo.getProgramId(), ecoInfo.getProgramName(), ecoInfo.getTheme(), ecoInfo.getRegion(),
                 regionService.parseRegionName(ecoInfo), ecoInfo.getOutline(), ecoInfo.getDetail());

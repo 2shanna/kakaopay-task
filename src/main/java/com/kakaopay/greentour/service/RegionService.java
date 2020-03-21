@@ -9,7 +9,6 @@ import com.kakaopay.greentour.dto.EcoInformation;
 import com.kakaopay.greentour.dto.LocalResponse;
 import com.kakaopay.greentour.repository.RegionRepository;
 import lombok.extern.slf4j.Slf4j;
-import org.json.simple.JSONObject;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -21,7 +20,12 @@ import java.io.InputStreamReader;
 import java.net.URL;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 
@@ -40,13 +44,13 @@ public class RegionService {
         String regionName = info.getRegion();
         regionName = REMOVE_KEYWORD.matcher(regionName).replaceAll(" ");
         regionName = SPLIT_KEYWORD.matcher(regionName).replaceAll(" ");
+        regionName = NUMERIC_KEYWORD.matcher(regionName).replaceAll(" ").trim();
 
         StringBuilder parsedRegionName = new StringBuilder();
         String[] regionArr = regionName.split(" ");
         for (int i = 0; i < regionArr.length; i++) {
             String region = regionArr[i];
-            region = NUMERIC_KEYWORD.matcher(region).replaceAll(" ").trim();
-            if (region.length() > 0) {
+            if (region.length() > 1) {              // don't save region which name of one letter
                 if (i != regionArr.length - 1) {
                     parsedRegionName.append(region).append(" ");
                 } else {
@@ -57,7 +61,7 @@ public class RegionService {
         return parsedRegionName.toString();
     }
 
-    private Region getLocalAddress(String regionName) {
+    public Region getLocalAddress(String regionName) {
         Region region = new Region(regionName);
         LocalResponse localRes = request("https://dapi.kakao.com/v2/local/search/address.json?",
                 "query=" + URLEncoder.encode(regionName, StandardCharsets.UTF_8),
@@ -98,7 +102,6 @@ public class RegionService {
         String requestUrl = apiPath + paramStr;
 
         HttpsURLConnection conn;
-        JSONObject resJSon;
         BufferedReader reader = null;
         InputStreamReader isr = null;
 
@@ -157,7 +160,7 @@ public class RegionService {
                 .map(this::getLocalAddress)
                 .collect(Collectors.toList());
 
-        // save region data         // TODO don't register when depth 1~3 names even equal to
+        // save region data
         regionList.forEach(regionRepository::saveAndFlush);
 
         // return all region data
