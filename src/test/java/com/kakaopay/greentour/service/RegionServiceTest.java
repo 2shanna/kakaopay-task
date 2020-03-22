@@ -33,7 +33,7 @@ class RegionServiceTest {
                 "강원도 속초, 양양, 고성", "테스트 프로그램입니다", "테스트 프로그램입니다. 디테일입니다.");
 
         String result = regionService.parseRegionName(ecoInfo);
-        assertEquals(result, "강원도 속초 양양 고성");
+        assertEquals("강원도 속초 양양 고성", result);
     }
 
     @Test
@@ -43,16 +43,16 @@ class RegionServiceTest {
         String regionName2 = "법주사로";
 
         Region result1 = regionService.getLocalAddress(regionName1);
-        assertEquals(result1.getRegionName(), "풍기읍");
-        assertEquals(result1.getRegion1DepthName(), "경북");
-        assertEquals(result1.getRegion2DepthName(), "영주시");
-        assertEquals(result1.getRegion3DepthName(), "풍기읍");
+        assertEquals("풍기읍", result1.getRegionName());
+        assertEquals("경북", result1.getRegion1DepthName());
+        assertEquals("영주시", result1.getRegion2DepthName());
+        assertEquals("풍기읍", result1.getRegion3DepthName());
 
         Region result2 = regionService.getLocalAddress(regionName2);
-        assertEquals(result2.getRegionName(), "법주사로");
-        assertEquals(result2.getRegion1DepthName(), "충북");
-        assertEquals(result2.getRegion2DepthName(), "보은군");
-        assertEquals(result2.getRegion3DepthName(), "속리산면");
+        assertEquals("법주사로", result2.getRegionName());
+        assertEquals("충북", result2.getRegion1DepthName());
+        assertEquals("보은군", result2.getRegion2DepthName());
+        assertEquals("속리산면", result2.getRegion3DepthName());
     }
 
     @Test
@@ -73,7 +73,7 @@ class RegionServiceTest {
         when(regionRepository.findAll()).thenReturn(regionList);
 
         List<Region> result = regionService.saveAll(ecoInformationList);
-        assertEquals(result.size(), regionList.size());
+        assertEquals(regionList.size(), result.size());
         verify(regionRepository, times(regionList.size())).saveAndFlush(any());
     }
 
@@ -92,7 +92,7 @@ class RegionServiceTest {
         when(regionRepository.findAll()).thenReturn(regionList);
 
         List<Region> result = regionService.save(ecoInfo);
-        assertEquals(result.size(), regionList.size());
+        assertEquals(regionList.size(), result.size());
         verify(regionRepository, times(regionList.size())).saveAndFlush(any());
     }
 }

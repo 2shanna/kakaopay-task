@@ -50,7 +50,7 @@ class ProgramServiceTest {
         when(programRepository.saveAll(any())).thenReturn(programList);
 
         List<Program> result = programService.saveAll(ecoInformationList);
-        assertEquals(result.size(), programList.size());
+        assertEquals(programList.size(), result.size());
         verify(programRepository, times(1)).saveAll(any());
     }
 
@@ -69,7 +69,7 @@ class ProgramServiceTest {
         when(programRepository.saveAndFlush(program)).thenReturn(program);
 
         Program result = programService.save(ecoInfo);
-        assertEquals(result.getProgramId(), program.getProgramId());
+        assertEquals(program.getProgramId(), result.getProgramId());
         verify(programRepository, times(1)).saveAndFlush(any());
     }
 
@@ -89,7 +89,7 @@ class ProgramServiceTest {
         when(programRepository.saveAndFlush(any())).thenReturn(program);
 
         Program result = programService.save(ecoInfo);
-        assertEquals(result.getProgramId(), program.getProgramId());
+        assertEquals(program.getProgramId(), result.getProgramId());
         verify(programRepository, times(1)).saveAndFlush(any());
     }
 }

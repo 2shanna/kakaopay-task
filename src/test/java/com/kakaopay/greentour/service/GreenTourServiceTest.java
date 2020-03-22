@@ -82,7 +82,7 @@ class GreenTourServiceTest {
         when(greenTourRepository.saveAndFlush(greenTour5)).thenReturn(greenTour5);
 
         List<GreenTour> result = greenTourService.saveAll(programList);
-        assertEquals(result.size(), greenTourList.size());      // TODO expected, actual
+        assertEquals(greenTourList.size(), result.size());      // TODO expected, actual
     }
 
     @Test
@@ -112,7 +112,7 @@ class GreenTourServiceTest {
         when(greenTourRepository.findAllByRegion(regionCd)).thenReturn(greenTourList);
 
         List<EcoInformation> result = greenTourService.findEcoInfoByRegionCd(regionCd);
-        assertEquals(result.size(), ecoInformationList.size());
+        assertEquals(ecoInformationList.size(), result.size());
     }
 
     @Test
@@ -129,7 +129,7 @@ class GreenTourServiceTest {
         when(programService.save(ecoInfo)).thenReturn(program);
 
         EcoInformation result = greenTourService.registerEcoInfo(ecoInfo);
-        assertEquals(result.getProgramId(), program.getProgramId());
+        assertEquals(program.getProgramId(), result.getProgramId());
     }
 
     @Test
@@ -147,7 +147,7 @@ class GreenTourServiceTest {
         when(programService.save(ecoInfo)).thenReturn(program);
 
         EcoInformation result = greenTourService.updateEcoInfo(ecoInfo);
-        assertEquals(result.getProgramId(), program.getProgramId());
+        assertEquals(program.getProgramId(), result.getProgramId());
         verify(greenTourRepository, atLeastOnce()).deleteById(any());
     }
 
@@ -172,8 +172,8 @@ class GreenTourServiceTest {
         when(greenTourRepository.findAllByRegion(region.getRegionCd())).thenReturn(greenTourList);
 
         SearchRegionResponse result = greenTourService.findByRegionName(regionName);
-        assertEquals(result.getRegionCd(), region.getRegionCd());
-        assertEquals(result.getProgramList().size(), programList.size());
+        assertEquals(region.getRegionCd(), result.getRegionCd());
+        assertEquals(programList.size(), result.getProgramList().size());
     }
 
     @Test
@@ -191,9 +191,9 @@ class GreenTourServiceTest {
         when(programRepository.findByOutlineContaining(keyword)).thenReturn(programList);
 
         OutlineKeywordResponse result = greenTourService.findProgramByOutlineKeyword(keyword);
-        assertEquals(result.getKeyword(), keyword);
-        assertEquals(result.getProgramList().get(0).getRegion(), "강원도");
-        assertEquals(result.getProgramList().get(0).getCount(), 2);
+        assertEquals(keyword, result.getKeyword());
+        assertEquals("강원도", result.getProgramList().get(0).getRegion());
+        assertEquals(2, result.getProgramList().get(0).getCount());
     }
 
     @Test
@@ -211,7 +211,7 @@ class GreenTourServiceTest {
         when(programRepository.findByDetailContaining(keyword)).thenReturn(programList);
 
         DetailKeywordResponse result = greenTourService.findProgramByDetailKeyword(keyword);
-        assertEquals(result.getKeyword(), keyword);
-        assertEquals(result.getCount(), 2);
+        assertEquals(keyword, result.getKeyword());
+        assertEquals(2, result.getCount());
     }
 }
