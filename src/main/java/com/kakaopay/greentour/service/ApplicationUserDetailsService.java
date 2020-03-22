@@ -56,16 +56,20 @@ public class ApplicationUserDetailsService implements UserDetailsService {
         return new User(applicationUser.getUsername(), applicationUser.getPassword(), emptyList());
     }
 
-    public String createRefreshToken(String authorization) throws JWTVerificationException {
+    public String getUsernameFromToken(String authorization) throws JWTVerificationException {
         String currentToken = authorization.replace(TOKEN_PREFIX, "");
 
-        Algorithm algorithm = HMAC512(SECRET.getBytes());
+        Algorithm algorithm = Algorithm.HMAC512(SECRET.getBytes());
         JWTVerifier verifier = JWT.require(algorithm)
-                                .build();
+                .build();
         DecodedJWT decodedJwt = verifier.verify(currentToken);
 
+        return decodedJwt.getSubject();
+    }
+
+    public String createToken(String username) {
         return JWT.create()
-                .withSubject(decodedJwt.getSubject())
+                .withSubject(username)
                 .withExpiresAt(new Date(System.currentTimeMillis() + EXPIRATION_TIME))
                 .sign(HMAC512(SECRET.getBytes()));
     }

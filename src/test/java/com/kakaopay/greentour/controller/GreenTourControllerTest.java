@@ -1,6 +1,8 @@
 package com.kakaopay.greentour.controller;
 
 import com.kakaopay.greentour.dto.EcoInformation;
+import com.kakaopay.greentour.service.ApplicationUserDetailsService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +19,16 @@ class GreenTourControllerTest {
     @Autowired
     private WebTestClient webTestClient;
 
+    @Autowired
+    private ApplicationUserDetailsService applicationUserDetailsService;
+
+    private String token;
+
+    @BeforeEach
+    void setUp() {
+        token = "Bearer " + applicationUserDetailsService.createToken("ryan");
+    }
+
     @Test
     @DisplayName("find eco information by region code")
     void findEcoInfoByRegionCd() throws Exception  {
@@ -24,6 +36,7 @@ class GreenTourControllerTest {
 
         webTestClient.get()
                 .uri("/greentour/ecoinfo/region/" + regionCd)
+                .header("Authorization", token)
                 .exchange()
                 .expectStatus().isOk();
     }
@@ -37,6 +50,7 @@ class GreenTourControllerTest {
         webTestClient.post()
                 .uri("/greentour/ecoinfo")
                 .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", token)
                 .body(Mono.just(ecoInfo), EcoInformation.class)
                 .exchange()
                 .expectStatus().isCreated();
@@ -51,6 +65,7 @@ class GreenTourControllerTest {
         webTestClient.put()
                 .uri("/greentour/ecoinfo")
                 .accept(MediaType.APPLICATION_JSON)
+                .header("Authorization", token)
                 .body(Mono.just(ecoInfo), EcoInformation.class)
                 .exchange()
                 .expectStatus().isCreated();
@@ -62,6 +77,7 @@ class GreenTourControllerTest {
         String regionName = "평창군";
         webTestClient.get()
                 .uri("/greentour/search/region?regionName=" + regionName)
+                .header("Authorization", token)
                 .exchange()
                 .expectStatus().isOk();
     }
@@ -72,6 +88,7 @@ class GreenTourControllerTest {
         String keyword = "세계문화유산";
         webTestClient.get()
                 .uri("/greentour/search/outline?keyword=" + keyword)
+                .header("Authorization", token)
                 .exchange()
                 .expectStatus().isOk();
     }
@@ -82,6 +99,7 @@ class GreenTourControllerTest {
         String keyword = "문화";
         webTestClient.get()
                 .uri("/greentour/search/detail?keyword=" + keyword)
+                .header("Authorization", token)
                 .exchange()
                 .expectStatus().isOk();
     }

@@ -38,7 +38,8 @@ public class ApplicationUserController {
     public ResponseEntity refreshToken(@RequestHeader(value="authorization") String authorization) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        String refreshedToken = applicationUserDetailsService.createRefreshToken(authorization);
+        String username = applicationUserDetailsService.getUsernameFromToken(authorization);
+        String refreshedToken = applicationUserDetailsService.createToken(username);
         return new ResponseEntity<>("{\"refreshedToken\": \"" + refreshedToken + "\"}\n", headers, HttpStatus.CREATED);
     }
 }

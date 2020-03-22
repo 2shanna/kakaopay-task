@@ -39,12 +39,12 @@ public class FileUploadService {
         EcoInformationResponse response = new EcoInformationResponse();
 
         // first, delete whole data from table
+        greenTourRepository.deleteAll();
+        greenTourRepository.flush();
         programRepository.deleteAll();
         programRepository.flush();
         regionRepository.deleteAll();
         regionRepository.flush();
-        greenTourRepository.deleteAll();
-        greenTourRepository.flush();
 
         // file read
         List<EcoInformation> ecoInformationList = new CsvUtil().readAndParse(file);

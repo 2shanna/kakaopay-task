@@ -1,6 +1,7 @@
 package com.kakaopay.greentour.controller;
 
 
+import com.kakaopay.greentour.service.ApplicationUserDetailsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -24,8 +25,15 @@ class FileUploadControllerTest {
     @Autowired
     private WebTestClient webTestClient;
 
+    @Autowired
+    private ApplicationUserDetailsService applicationUserDetailsService;
+
+    private String token;
+
     @BeforeEach
     void setUp() {
+        token = "Bearer " + applicationUserDetailsService.createToken("ryan");
+
         webTestClient = webTestClient
                 .mutate()
                 .responseTimeout(Duration.ofMillis(30000))
@@ -43,6 +51,7 @@ class FileUploadControllerTest {
         webTestClient.post()
                 .uri("/upload")
                 .contentType(MULTIPART_FORM_DATA)
+                .header("Authorization", token)
                 .body(BodyInserters.fromMultipartData("file", new FileSystemResource(csvFile)))
                 .exchange()
                 .expectStatus().isCreated();

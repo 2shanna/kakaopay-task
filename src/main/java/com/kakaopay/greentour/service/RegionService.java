@@ -9,11 +9,11 @@ import com.kakaopay.greentour.dto.EcoInformation;
 import com.kakaopay.greentour.dto.LocalResponse;
 import com.kakaopay.greentour.repository.RegionRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
-import org.springframework.util.StringUtils;
 
 import javax.net.ssl.HttpsURLConnection;
 import java.io.BufferedReader;
@@ -49,6 +49,9 @@ public class RegionService {
 
     public String parseRegionName(EcoInformation info) {
         String regionName = info.getRegion();
+        if (StringUtils.isEmpty(regionName)) {
+            return regionName;
+        }
         regionName = REMOVE_KEYWORD.matcher(regionName).replaceAll(" ");
         regionName = SPLIT_KEYWORD.matcher(regionName).replaceAll(" ");
         regionName = NUMERIC_KEYWORD.matcher(regionName).replaceAll(" ").trim();

@@ -1,5 +1,7 @@
 package com.kakaopay.greentour.controller;
 
+import com.kakaopay.greentour.service.ApplicationUserDetailsService;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,11 +16,22 @@ class HealthCheckControllerTest {
     @Autowired
     private WebTestClient webTestClient;
 
+    @Autowired
+    private ApplicationUserDetailsService applicationUserDetailsService;
+
+    private String token;
+
+    @BeforeEach
+    void setUp() {
+        token = "Bearer " + applicationUserDetailsService.createToken("ryan");
+    }
+
     @Test
     @DisplayName("health check")
     void healthCheck() throws Exception  {
         webTestClient.get()
                 .uri("/health_check")
+                .header("Authorization", token)
                 .exchange()
                 .expectStatus().isOk();
     }
