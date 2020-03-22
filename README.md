@@ -109,7 +109,7 @@ csv파일의 주소 데이터를 정규화하기 위햏 외부 API를 이용
 -F 'file=@{path/file.csv}' \ -X POST 'http://localhost:8080/upload' 
 ```
 [출력 예]  
-```json
+```
 {
     "regionList": [
         {
@@ -149,7 +149,7 @@ csv파일의 주소 데이터를 정규화하기 위햏 외부 API를 이용
 -X GET 'http://localhost:8080/greentour/ecoinfo/region/{recionCd}'
 ```
 [출력 예]  
-```json
+```
 [
     {
         "programId": 1,
@@ -231,7 +231,7 @@ csv파일의 주소 데이터를 정규화하기 위햏 외부 API를 이용
 -X GET 'http://localhost:8080/greentour/search/region?regionName={지역명}'
 ```
 [출력 예]  
-```json
+```
 {
     "regionCd": {지역코드},
     "programList": [
@@ -254,7 +254,7 @@ csv파일의 주소 데이터를 정규화하기 위햏 외부 API를 이용
 -X GET 'http://localhost:8080/greentour/search/outline?keyword={키워드}'
 ```
 [출력 예]  
-```json
+```
 {
     "keyword": {키워드},
     "programList": [
@@ -276,7 +276,7 @@ csv파일의 주소 데이터를 정규화하기 위햏 외부 API를 이용
 -X GET 'http://localhost:8080/greentour/search/detail?keyword={키워드}'
 ```
 [출력 예]  
-```json
+```
 {
     "keyword": {키워드},
     "count": {출현빈도수}
