@@ -82,7 +82,7 @@ class GreenTourServiceTest {
         when(greenTourRepository.saveAndFlush(greenTour5)).thenReturn(greenTour5);
 
         List<GreenTour> result = greenTourService.saveAll(programList);
-        assertEquals(greenTourList.size(), result.size());      // TODO expected, actual
+        assertEquals(greenTourList.size(), result.size());
     }
 
     @Test

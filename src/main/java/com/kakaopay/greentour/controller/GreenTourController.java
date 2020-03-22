@@ -35,15 +35,24 @@ public class GreenTourController {
     public ResponseEntity registerEcoInfo(@RequestBody EcoInformation ecoInfo) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        return new ResponseEntity<>(greenTourService.registerEcoInfo(ecoInfo), headers, HttpStatus.CREATED);
+        EcoInformation result = greenTourService.registerEcoInfo(ecoInfo);
+        if (result == null) {
+            return new ResponseEntity<>("program id is already in use.", headers, HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(greenTourService.registerEcoInfo(ecoInfo), headers, HttpStatus.CREATED);
+        }
     }
 
     @PutMapping("ecoinfo")
     public ResponseEntity updateEcoInfo(@RequestBody EcoInformation ecoInfo) {
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_JSON);
-        return new ResponseEntity<>(greenTourService.updateEcoInfo(ecoInfo), headers, HttpStatus.CREATED);
-        // TODO return 404 when there was no data to update
+        EcoInformation result = greenTourService.updateEcoInfo(ecoInfo);
+        if (result == null) {
+            return new ResponseEntity<>("program id to update does not exist.", headers, HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>(greenTourService.updateEcoInfo(ecoInfo), headers, HttpStatus.CREATED);
+        }
     }
 
     @GetMapping("search/region")

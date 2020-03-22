@@ -14,6 +14,7 @@
 - gradle
 - OpenCSV
 - JWT
+- 카카오맵 API (https://developers.kakao.com/docs/restapi/local)
 
 
 ## 문제해결 방법
@@ -53,13 +54,13 @@ csv파일의 주소 데이터를 정규화하기 위햏 외부 API를 이용
 > Method : POST  
 > URL : http://localhost:8080/users/sign-up
 
-[입력]  
+[입력 예]  
 ```zsh
 % curl -H "Content-Type: application/json" \
 -X POST -d '{ "username": "admin", "password": "password" }' http://localhost:8080/users/sign-up
 ```
 
-[출력]  
+[출력 예]  
 ```json
 {
    "result": "success"
@@ -70,12 +71,12 @@ csv파일의 주소 데이터를 정규화하기 위햏 외부 API를 이용
 > Method : POST
 > URL : http://localhost:8080/users/login
 
-[입력]  
+[입력 예]  
 ```zsh
 % curl -H "Content-Type: application/json" \
 -X POST -d '{ "username": "admin", "password": "password" }' http://localhost:8080/users/sign-in
 ```
-[출력]  
+[출력 예]  
 ```json
 {
    "token": "aaa.bbb.ccc"
@@ -86,12 +87,12 @@ csv파일의 주소 데이터를 정규화하기 위햏 외부 API를 이용
 > Method : POST
 > URL : http://localhost:8080/users/refresh
 
-[입력]  
+[입력 예]  
 ```zsh
 % curl -H "Authorization: Bearer {aaa.bbb.ccc}" -H 'Content-Type: application/json' \
 -X POST http://localhost:8080/users/refresh
 ```
-[출력]  
+[출력 예]  
 ```json
 {
    "refreshedToken": "xxx.yyy.zzz"
@@ -102,12 +103,12 @@ csv파일의 주소 데이터를 정규화하기 위햏 외부 API를 이용
 > Method : POST
 > URL : http://localhost:8080/users/refresh
 
-[입력]  
+[입력 예]  
 ```zsh
 % curl -H "Authorization: Bearer {xxx.yyy.zzz}" -H 'Content-Type: application/json' \
 -F 'file=@{path/file.csv}' \ -X POST 'http://localhost:8080/upload' 
 ```
-[출력]  
+[출력 예]  
 ```json
 {
     "regionList": [
@@ -141,13 +142,13 @@ csv파일의 주소 데이터를 정규화하기 위햏 외부 API를 이용
 > Method : GET
 > URL : http://localhost:8080/greentour/ecoinfo/region/{recionCd}
 
-[입력]  
+[입력 예]  
 ```zsh
 % curl -H "Authorization: Bearer {xxx.yyy.zzz}" \
 -H 'Content-Type: application/json' \
 -X GET 'http://localhost:8080/greentour/ecoinfo/region/{recionCd}'
 ```
-[출력]  
+[출력 예]  
 ```json
 [
     {
@@ -166,7 +167,7 @@ csv파일의 주소 데이터를 정규화하기 위햏 외부 API를 이용
 > Method : POST
 > URL : http://localhost:8080/greentour/ecoinfo
 
-[입력]  
+[입력 예]  
 ```zsh
 % curl -H "Authorization: Bearer {xxx.yyy.zzz}" -H 'Content-Type: application/json' \
 -X POST 'http://localhost:8080/greentour/ecoinfo'
@@ -179,7 +180,7 @@ csv파일의 주소 데이터를 정규화하기 위햏 외부 API를 이용
     "detail": {테스트 프로그램 상세 설명입니다}
 }'
 ```
-[출력]  
+[출력 예]  
 ```json
 {
     "programId": 567,
@@ -195,7 +196,7 @@ csv파일의 주소 데이터를 정규화하기 위햏 외부 API를 이용
 > Method : PUT
 > URL : http://localhost:8080/greentour/ecoinfo
 
-[입력]  
+[입력 예]  
 ```zsh
 % curl -H "Authorization: Bearer {xxx.yyy.zzz}" -H 'Content-Type: application/json' \
 -X PUT 'http://localhost:8080/greentour/ecoinfo'
@@ -208,7 +209,7 @@ csv파일의 주소 데이터를 정규화하기 위햏 외부 API를 이용
     "detail": {테스트 프로그램 상세 설명입니다22}
 }'
 ```
-[출력]  
+[출력 예]  
 ```json
 {
     "programId": 567,
@@ -224,12 +225,12 @@ csv파일의 주소 데이터를 정규화하기 위햏 외부 API를 이용
 > Method : GET
 > URL : http://localhost:8080/greentour/search/region?regionName={지역명}
 
-[입력]  
+[입력 예]  
 ```zsh
 % curl -H "Authorization: Bearer {xxx.yyy.zzz}" -H 'Content-Type: application/json' \
 -X GET 'http://localhost:8080/greentour/search/region?regionName={지역명}'
 ```
-[출력]  
+[출력 예]  
 ```json
 {
     "regionCd": {지역코드},
@@ -247,12 +248,12 @@ csv파일의 주소 데이터를 정규화하기 위햏 외부 API를 이용
 > Method : GET
 > URL : http://localhost:8080/greentour/search/outline?keyword={키워드}
 
-[입력]  
+[입력 예]  
 ```zsh
 % curl -H "Authorization: Bearer {xxx.yyy.zzz}" -H 'Content-Type: application/json' \
 -X GET 'http://localhost:8080/greentour/search/outline?keyword={키워드}'
 ```
-[출력]  
+[출력 예]  
 ```json
 {
     "keyword": {키워드},
@@ -269,12 +270,12 @@ csv파일의 주소 데이터를 정규화하기 위햏 외부 API를 이용
 > Method : GET
 > URL : http://localhost:8080/greentour/search/detail?keyword={키워드}
 
-[입력]  
+[입력 예]  
 ```zsh
 % curl -H "Authorization: Bearer {xxx.yyy.zzz}" -H 'Content-Type: application/json' \
 -X GET 'http://localhost:8080/greentour/search/detail?keyword={키워드}'
 ```
-[출력]  
+[출력 예]  
 ```json
 {
     "keyword": {키워드},

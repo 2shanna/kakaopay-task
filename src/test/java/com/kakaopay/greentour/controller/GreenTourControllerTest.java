@@ -1,6 +1,7 @@
 package com.kakaopay.greentour.controller;
 
 import com.kakaopay.greentour.dto.EcoInformation;
+import com.kakaopay.greentour.repository.ProgramRepository;
 import com.kakaopay.greentour.service.ApplicationUserDetailsService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -11,7 +12,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.reactive.server.WebTestClient;
 import reactor.core.publisher.Mono;
-
 @AutoConfigureWebTestClient
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 class GreenTourControllerTest {
@@ -21,6 +21,9 @@ class GreenTourControllerTest {
 
     @Autowired
     private ApplicationUserDetailsService applicationUserDetailsService;
+
+    @Autowired
+    private ProgramRepository programRepository;
 
     private String token;
 
@@ -68,7 +71,7 @@ class GreenTourControllerTest {
                 .header("Authorization", token)
                 .body(Mono.just(ecoInfo), EcoInformation.class)
                 .exchange()
-                .expectStatus().isCreated();
+                .expectStatus().isBadRequest();
     }
 
     @Test

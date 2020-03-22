@@ -1,5 +1,6 @@
 package com.kakaopay.greentour.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -45,6 +46,7 @@ public class Region implements Serializable {
     private String region3DepthName;
 
     @OneToMany(mappedBy = "region")
+    @JsonIgnore
     private List<GreenTour> greenTours = new ArrayList<>();
 
     public Region(String regionName) {

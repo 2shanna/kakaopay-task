@@ -36,7 +36,7 @@ public class ApplicationUserDetailsService implements UserDetailsService {
 
     public boolean save(ApplicationUser applicationUser) {
         if (applicationUserRepository.findByUsername(applicationUser.getUsername()).isPresent()) {
-            return false;           // todo
+            return false;
         }
         applicationUser.setPassword(bCryptPasswordEncoder.encode(applicationUser.getPassword()));
         applicationUserRepository.save(applicationUser);

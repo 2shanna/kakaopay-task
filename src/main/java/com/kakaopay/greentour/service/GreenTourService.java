@@ -84,7 +84,7 @@ public class GreenTourService {
     public EcoInformation registerEcoInfo(EcoInformation ecoInfo) {
         // program data existence check
         if (programRepository.existsById(ecoInfo.getProgramId())) {
-            return null;                // duplication error
+            return null;
         }
 
         // create program data
@@ -101,7 +101,7 @@ public class GreenTourService {
 
     public EcoInformation updateEcoInfo(EcoInformation ecoInfo) {
         if (!programRepository.existsById(ecoInfo.getProgramId())) {
-            return null;                // duplication error
+            return null;
         }
 
         // save program data
