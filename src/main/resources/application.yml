@@ -23,3 +23,7 @@ spring:
       settings:
         trace: false
         web-allow-others: false
+
+jasypt:
+  encryptor:
+    bean: jasyptStringEncryptor

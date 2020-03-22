@@ -9,7 +9,9 @@ import com.kakaopay.greentour.dto.EcoInformation;
 import com.kakaopay.greentour.dto.LocalResponse;
 import com.kakaopay.greentour.repository.RegionRepository;
 import lombok.extern.slf4j.Slf4j;
+import org.jasypt.encryption.pbe.StandardPBEStringEncryptor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
@@ -31,11 +33,16 @@ import java.util.stream.Collectors;
 
 @Service
 @Slf4j
+@ConfigurationProperties(prefix="dapi")
 public class RegionService {
 
     private final Pattern REMOVE_KEYWORD = Pattern.compile("(\\s+)?(등|일대|일원|번지|,|-|사무소|층|\\n)(\\s*)");
     private final Pattern SPLIT_KEYWORD = Pattern.compile("(\\s*)([및|~]+)(\\s*)");
     private final Pattern NUMERIC_KEYWORD = Pattern.compile("[0-9]+");
+
+    private final String API_PATH = "https://dapi.kakao.com/v2/local/search/address.json";
+    private final String AUTH_KEY_PREFIX = "KakaoAK ";
+    private final String AUTH_KEY = "7NGkDDFYd0zK+R2Yux9S5KuFz09DyRqkTpMCuTQpZ1po7J9AalAt41MsaCTEGXgD";
 
     @Autowired
     private RegionRepository regionRepository;
@@ -63,9 +70,12 @@ public class RegionService {
 
     public Region getLocalAddress(String regionName) {
         Region region = new Region(regionName);
-        LocalResponse localRes = request("https://dapi.kakao.com/v2/local/search/address.json?",
-                "query=" + URLEncoder.encode(regionName, StandardCharsets.UTF_8),
-                "KakaoAK 0fd430168776190506d629b6f31fab53");
+        StandardPBEStringEncryptor pbeEnc = new StandardPBEStringEncryptor();
+        pbeEnc.setAlgorithm("PBEWithMD5AndDES");
+        pbeEnc.setPassword("test");
+        LocalResponse localRes = request(API_PATH,
+                "?query=" + URLEncoder.encode(regionName, StandardCharsets.UTF_8),
+                AUTH_KEY_PREFIX + pbeEnc.decrypt(AUTH_KEY));
 
         if ((int) localRes.getMeta().get("total_count") > 0) {
             Documents doc = localRes.getDocuments().get(0);
@@ -98,7 +108,6 @@ public class RegionService {
     }
 
     private LocalResponse request(final String apiPath, String paramStr, String key) {
-
         String requestUrl = apiPath + paramStr;
 
         HttpsURLConnection conn;
